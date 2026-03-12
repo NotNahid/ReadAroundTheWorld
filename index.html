@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>read around the world</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg:        #f5f2ec;
+    --fg:        #181818;
+    --sub:       #444;
+    --muted:     #888;
+    --border:    #d9d4cb;
+    --hover:     #edeae3;
+    --input-bg:  #ffffff;
+    --done-dot:  #3a8c33;
+    --done-text: #2a6626;
+    --done-link: #2a6626;
+
+    /* fluid type scale */
+    --step-0: clamp(15px, 1.8vw, 17px);
+    --step-1: clamp(17px, 2.2vw, 20px);
+    --step--1: clamp(13px, 1.5vw, 15px);
+
+    /* fluid spacing */
+    --space-xs:  clamp(6px,  1vw,  10px);
+    --space-s:   clamp(12px, 2vw,  18px);
+    --space-m:   clamp(20px, 3vw,  32px);
+    --space-l:   clamp(40px, 6vw,  72px);
+    --space-xl:  clamp(60px, 9vw, 108px);
+
+    --max-w: 600px;
+    --side:  clamp(18px, 5vw, 40px);
+  }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: var(--step-0);
+    line-height: 1.65;
+    min-height: 100svh;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(5px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── PAGE SHELL ── */
+  .wrap {
+    width: min(var(--max-w), 100%);
+    margin-inline: auto;
+    padding: var(--space-l) var(--side) var(--space-xl);
+  }
+
+  /* ── HEADER ── */
+  header {
+    margin-bottom: var(--space-l);
+    animation: fadeUp .4s ease both;
+  }
+
+  header h1 {
+    font-size: var(--step-1);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--fg);
+    margin-bottom: 5px;
+    line-height: 1.3;
+  }
+
+  header p {
+    font-size: var(--step--1);
+    color: var(--sub);
+    line-height: 1.6;
+  }
+
+  header a {
+    color: var(--sub);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: color .15s, border-color .15s;
+  }
+  header a:hover { color: var(--fg); border-color: var(--sub); }
+
+  /* ── SEARCH ── */
+  .search-wrap {
+    position: relative;
+    margin-bottom: var(--space-xs);
+    animation: fadeUp .4s .07s ease both;
+  }
+
+  #search {
+    display: block;
+    width: 100%;
+    background: var(--input-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    outline: none;
+    font-family: 'EB Garamond', Georgia, serif;
+    font-size: var(--step-0);
+    font-style: italic;
+    color: var(--fg);
+    padding: clamp(8px, 1.5vw, 11px) clamp(10px, 2vw, 14px);
+    padding-right: 52px;
+    transition: border-color .15s, box-shadow .15s;
+    -webkit-appearance: none;
+    appearance: none;
+  }
+  #search::placeholder { color: var(--muted); }
+  #search:focus {
+    border-color: var(--fg);
+    box-shadow: 0 0 0 3px rgba(24,24,24,.07);
+  }
+
+  .search-kbd {
+    position: absolute;
+    right: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 12px;
+    color: var(--muted);
+    pointer-events: none;
+    line-height: 1;
+    transition: opacity .15s;
+  }
+
+  /* ── CONTROLS ROW ── */
+  .controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-s);
+    margin-bottom: var(--space-m);
+    animation: fadeUp .4s .13s ease both;
+    flex-wrap: wrap;
+  }
+
+  .filter-row {
+    display: flex;
+    gap: clamp(12px, 2.5vw, 22px);
+  }
+
+  .filter-btn {
+    background: none;
+    border: none;
+    font-family: 'EB Garamond', serif;
+    font-size: var(--step--1);
+    font-style: italic;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0 0 2px;
+    border-bottom: 1px solid transparent;
+    transition: color .12s, border-color .12s;
+    white-space: nowrap;
+    /* bigger tap target on mobile */
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+  }
+  .filter-btn:hover { color: var(--sub); }
+  .filter-btn.active { color: var(--fg); border-bottom-color: var(--fg); }
+
+  .progress-line {
+    font-size: var(--step--1);
+    color: var(--muted);
+    font-style: italic;
+    white-space: nowrap;
+  }
+  .progress-line strong {
+    color: var(--fg);
+    font-weight: 500;
+    font-style: normal;
+  }
+
+  /* ── LIST ── */
+  .country-list { list-style: none; }
+
+  .country-item {
+    border-top: 1px solid var(--border);
+    padding: clamp(10px, 1.8vw, 14px) clamp(8px, 1.5vw, 12px);
+    display: grid;
+    grid-template-columns: 16px 1fr;
+    gap: clamp(10px, 1.8vw, 16px);
+    align-items: start;
+    border-radius: 4px;
+    margin: 0 calc(-1 * clamp(8px, 1.5vw, 12px));
+    transition: background .12s;
+    /* iOS momentum scroll flicker fix */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  .country-item:last-child { border-bottom: 1px solid var(--border); }
+  .country-item:hover { background: var(--hover); }
+
+  /* dot — vertically centered with first text line */
+  .ci-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1.5px solid #bbb;
+    margin-top: calc(var(--step-0) * 0.43);  /* optical centre of cap height */
+    flex-shrink: 0;
+    transition: background .15s, border-color .15s;
+  }
+  .ci-dot.done { background: var(--done-dot); border-color: var(--done-dot); }
+
+  .ci-body { min-width: 0; }
+
+  .ci-top {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    flex-wrap: nowrap;
+  }
+
+  .ci-country {
+    font-size: var(--step-0);
+    color: var(--fg);
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ci-flag {
+    font-size: clamp(12px, 1.6vw, 15px);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .ci-book {
+    margin-top: 2px;
+    font-size: var(--step--1);
+    color: var(--sub);
+    font-style: italic;
+    line-height: 1.55;
+    /* prevent long titles from blowing out layout */
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .ci-book a {
+    color: var(--done-link);
+    text-decoration: none;
+    font-style: normal;
+    border-bottom: 1px solid rgba(42,102,38,.25);
+    transition: color .12s, border-color .12s;
+    /* big enough tap target */
+    display: inline-block;
+    padding-bottom: 1px;
+  }
+  .ci-book a:hover { color: #1a4a17; border-color: #1a4a17; }
+
+  /* ── EMPTY ── */
+  #empty {
+    display: none;
+    font-size: var(--step-0);
+    font-style: italic;
+    color: var(--muted);
+    padding: var(--space-m) 0;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: var(--space-l);
+    font-size: var(--step--1);
+    color: var(--muted);
+    font-style: italic;
+    line-height: 2;
+  }
+  footer a {
+    color: var(--sub);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: color .12s, border-color .12s;
+  }
+  footer a:hover { color: var(--fg); border-color: var(--sub); }
+  footer .sep { margin-inline: 6px; color: var(--border); }
+
+  /* ── TOUCH: remove hover flicker on mobile ── */
+  @media (hover: none) {
+    .country-item:hover { background: transparent; }
+    .country-item:active { background: var(--hover); }
+  }
+
+  /* ── NARROW: stack controls ── */
+  @media (max-width: 360px) {
+    .controls { flex-direction: column; align-items: flex-start; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>read around the world.</h1>
+    <p>one audiobook from every country — chosen by you.
+      <a href="https://forms.gle/iFzCNhhu93Z1Pwir9" target="_blank" rel="noopener">submit yours →</a>
+    </p>
+  </header>
+
+  <div class="search-wrap">
+    <input
+      id="search"
+      type="search"
+      inputmode="search"
+      placeholder="search a country…"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+    >
+    <span class="search-kbd" id="kbdHint">press /</span>
+  </div>
+
+  <div class="controls">
+    <div class="filter-row">
+      <button class="filter-btn active" data-filter="all">all</button>
+      <button class="filter-btn" data-filter="done">read</button>
+      <button class="filter-btn" data-filter="todo">unread</button>
+    </div>
+    <div class="progress-line" id="progressLine"></div>
+  </div>
+
+  <ul class="country-list" id="list"></ul>
+  <div id="empty">nothing found.</div>
+
+  <footer>
+    <a href="https://forms.gle/iFzCNhhu93Z1Pwir9" target="_blank" rel="noopener">submit a book</a>
+    <span class="sep">·</span>
+    <a href="https://www.youtube.com/@PustokKit" target="_blank" rel="noopener">@PustokKit on youtube</a>
+  </footer>
+
+</div>
+
+<script>
+const books = {
+  "Angola": {
+    title: "Whites Can Dance Too",
+    author: "Kalaf Epalanga",
+    playlist: "https://www.youtube.com/playlist?list=PLljZAglIVIZxjT5rkDHwWe6QmqHETirgw"
+  }
+};
+
+const countries = [
+  ["Afghanistan","🇦🇫"],["Albania","🇦🇱"],["Algeria","🇩🇿"],["Andorra","🇦🇩"],["Angola","🇦🇴"],
+  ["Antigua and Barbuda","🇦🇬"],["Argentina","🇦🇷"],["Armenia","🇦🇲"],["Australia","🇦🇺"],["Austria","🇦🇹"],
+  ["Azerbaijan","🇦🇿"],["Bahamas","🇧🇸"],["Bahrain","🇧🇭"],["Bangladesh","🇧🇩"],["Barbados","🇧🇧"],
+  ["Belarus","🇧🇾"],["Belgium","🇧🇪"],["Belize","🇧🇿"],["Benin","🇧🇯"],["Bhutan","🇧🇹"],
+  ["Bolivia","🇧🇴"],["Bosnia and Herzegovina","🇧🇦"],["Botswana","🇧🇼"],["Brazil","🇧🇷"],["Brunei","🇧🇳"],
+  ["Bulgaria","🇧🇬"],["Burkina Faso","🇧🇫"],["Burundi","🇧🇮"],["Cabo Verde","🇨🇻"],["Cambodia","🇰🇭"],
+  ["Cameroon","🇨🇲"],["Canada","🇨🇦"],["Central African Republic","🇨🇫"],["Chad","🇹🇩"],["Chile","🇨🇱"],
+  ["China","🇨🇳"],["Colombia","🇨🇴"],["Comoros","🇰🇲"],["Congo (Republic)","🇨🇬"],["Congo (DR)","🇨🇩"],
+  ["Costa Rica","🇨🇷"],["Croatia","🇭🇷"],["Cuba","🇨🇺"],["Cyprus","🇨🇾"],["Czechia","🇨🇿"],
+  ["Denmark","🇩🇰"],["Djibouti","🇩🇯"],["Dominica","🇩🇲"],["Dominican Republic","🇩🇴"],["Ecuador","🇪🇨"],
+  ["Egypt","🇪🇬"],["El Salvador","🇸🇻"],["Equatorial Guinea","🇬🇶"],["Eritrea","🇪🇷"],["Estonia","🇪🇪"],
+  ["Eswatini","🇸🇿"],["Ethiopia","🇪🇹"],["Fiji","🇫🇯"],["Finland","🇫🇮"],["France","🇫🇷"],
+  ["Gabon","🇬🇦"],["Gambia","🇬🇲"],["Georgia","🇬🇪"],["Germany","🇩🇪"],["Ghana","🇬🇭"],
+  ["Greece","🇬🇷"],["Grenada","🇬🇩"],["Guatemala","🇬🇹"],["Guinea","🇬🇳"],["Guinea-Bissau","🇬🇼"],
+  ["Guyana","🇬🇾"],["Haiti","🇭🇹"],["Honduras","🇭🇳"],["Hungary","🇭🇺"],["Iceland","🇮🇸"],
+  ["India","🇮🇳"],["Indonesia","🇮🇩"],["Iran","🇮🇷"],["Iraq","🇮🇶"],["Ireland","🇮🇪"],
+  ["Israel","🇮🇱"],["Italy","🇮🇹"],["Jamaica","🇯🇲"],["Japan","🇯🇵"],["Jordan","🇯🇴"],
+  ["Kazakhstan","🇰🇿"],["Kenya","🇰🇪"],["Kiribati","🇰🇮"],["Kuwait","🇰🇼"],["Kyrgyzstan","🇰🇬"],
+  ["Laos","🇱🇦"],["Latvia","🇱🇻"],["Lebanon","🇱🇧"],["Lesotho","🇱🇸"],["Liberia","🇱🇷"],
+  ["Libya","🇱🇾"],["Liechtenstein","🇱🇮"],["Lithuania","🇱🇹"],["Luxembourg","🇱🇺"],["Madagascar","🇲🇬"],
+  ["Malawi","🇲🇼"],["Malaysia","🇲🇾"],["Maldives","🇲🇻"],["Mali","🇲🇱"],["Malta","🇲🇹"],
+  ["Marshall Islands","🇲🇭"],["Mauritania","🇲🇷"],["Mauritius","🇲🇺"],["Mexico","🇲🇽"],["Micronesia","🇫🇲"],
+  ["Moldova","🇲🇩"],["Monaco","🇲🇨"],["Mongolia","🇲🇳"],["Montenegro","🇲🇪"],["Morocco","🇲🇦"],
+  ["Mozambique","🇲🇿"],["Myanmar","🇲🇲"],["Namibia","🇳🇦"],["Nauru","🇳🇷"],["Nepal","🇳🇵"],
+  ["Netherlands","🇳🇱"],["New Zealand","🇳🇿"],["Nicaragua","🇳🇮"],["Niger","🇳🇪"],["Nigeria","🇳🇬"],
+  ["North Korea","🇰🇵"],["North Macedonia","🇲🇰"],["Norway","🇳🇴"],["Oman","🇴🇲"],["Pakistan","🇵🇰"],
+  ["Palau","🇵🇼"],["Palestine","🇵🇸"],["Panama","🇵🇦"],["Papua New Guinea","🇵🇬"],["Paraguay","🇵🇾"],
+  ["Peru","🇵🇪"],["Philippines","🇵🇭"],["Poland","🇵🇱"],["Portugal","🇵🇹"],["Qatar","🇶🇦"],
+  ["Romania","🇷🇴"],["Russia","🇷🇺"],["Rwanda","🇷🇼"],["Saint Kitts and Nevis","🇰🇳"],["Saint Lucia","🇱🇨"],
+  ["Saint Vincent and the Grenadines","🇻🇨"],["Samoa","🇼🇸"],["San Marino","🇸🇲"],["Sao Tome and Principe","🇸🇹"],
+  ["Saudi Arabia","🇸🇦"],["Senegal","🇸🇳"],["Serbia","🇷🇸"],["Seychelles","🇸🇨"],["Sierra Leone","🇸🇱"],
+  ["Singapore","🇸🇬"],["Slovakia","🇸🇰"],["Slovenia","🇸🇮"],["Solomon Islands","🇸🇧"],["Somalia","🇸🇴"],
+  ["South Africa","🇿🇦"],["South Korea","🇰🇷"],["South Sudan","🇸🇸"],["Spain","🇪🇸"],["Sri Lanka","🇱🇰"],
+  ["Sudan","🇸🇩"],["Suriname","🇸🇷"],["Sweden","🇸🇪"],["Switzerland","🇨🇭"],["Syria","🇸🇾"],
+  ["Tajikistan","🇹🇯"],["Tanzania","🇹🇿"],["Thailand","🇹🇭"],["Timor-Leste","🇹🇱"],["Togo","🇹🇬"],
+  ["Tonga","🇹🇴"],["Trinidad and Tobago","🇹🇹"],["Tunisia","🇹🇳"],["Turkey","🇹🇷"],["Turkmenistan","🇹🇲"],
+  ["Tuvalu","🇹🇻"],["Uganda","🇺🇬"],["Ukraine","🇺🇦"],["United Arab Emirates","🇦🇪"],["United Kingdom","🇬🇧"],
+  ["United States","🇺🇸"],["Vanuatu","🇻🇺"],["Vatican City","🇻🇦"],["Venezuela","🇻🇪"],["Vietnam","🇻🇳"],
+  ["Yemen","🇾🇪"],["Zambia","🇿🇲"],["Zimbabwe","🇿🇼"]
+];
+
+const listEl     = document.getElementById('list');
+const emptyEl    = document.getElementById('empty');
+const searchEl   = document.getElementById('search');
+const progressEl = document.getElementById('progressLine');
+const kbdHint    = document.getElementById('kbdHint');
+
+let currentFilter = 'all';
+let currentQuery  = '';
+
+// Build all nodes once — never re-create them
+const nodes = countries.map(([name, flag]) => {
+  const book = books[name];
+  const done = !!book;
+  const li   = document.createElement('li');
+  li.className = 'country-item';
+
+  const bookHtml = done
+    ? `<div class="ci-book"><em>${book.title}</em> — ${book.author}${
+        book.playlist
+          ? `&nbsp;<a href="${book.playlist}" target="_blank" rel="noopener">listen →</a>`
+          : ''
+      }</div>`
+    : '';
+
+  li.innerHTML = `
+    <div class="ci-dot${done ? ' done' : ''}"></div>
+    <div class="ci-body">
+      <div class="ci-top">
+        <span class="ci-country">${name}</span>
+        <span class="ci-flag" aria-hidden="true">${flag}</span>
+      </div>
+      ${bookHtml}
+    </div>`;
+
+  li._name = name.toLowerCase();
+  li._done = done;
+  return li;
+});
+
+const doneCount = nodes.filter(n => n._done).length;
+
+function render() {
+  const q = currentQuery.toLowerCase().trim();
+  const frag = document.createDocumentFragment();
+  let shown = 0;
+
+  for (const li of nodes) {
+    const okFilter =
+      currentFilter === 'all' ||
+      (currentFilter === 'done' && li._done) ||
+      (currentFilter === 'todo' && !li._done);
+    const okQuery = !q || li._name.includes(q);
+
+    if (okFilter && okQuery) {
+      frag.appendChild(li);
+      shown++;
+    }
+  }
+
+  listEl.innerHTML = '';
+  listEl.appendChild(frag);
+  emptyEl.style.display = shown === 0 ? 'block' : 'none';
+  progressEl.innerHTML  = `<strong>${doneCount}</strong> / 195`;
+}
+
+// Search
+let timer;
+searchEl.addEventListener('input', () => {
+  clearTimeout(timer);
+  timer = setTimeout(() => { currentQuery = searchEl.value; render(); }, 70);
+});
+
+// Hide kbd hint while focused / has value
+searchEl.addEventListener('focus', () => kbdHint.style.opacity = '0');
+searchEl.addEventListener('blur',  () => { if (!searchEl.value) kbdHint.style.opacity = '1'; });
+
+// Clear the native ✕ in type="search"
+searchEl.addEventListener('search', () => { currentQuery = ''; render(); });
+
+// Filter buttons
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentFilter = btn.dataset.filter;
+    render();
+  });
+});
+
+// Keyboard shortcuts (desktop only)
+const isDesktop = () => !('ontouchstart' in window);
+document.addEventListener('keydown', e => {
+  if (!isDesktop()) return;
+  if (e.key === '/' && document.activeElement !== searchEl) {
+    e.preventDefault();
+    searchEl.focus();
+    searchEl.select();
+  }
+  if (e.key === 'Escape') {
+    searchEl.blur();
+    if (searchEl.value) { searchEl.value = ''; currentQuery = ''; render(); }
+  }
+});
+
+// Hide kbd hint on touch devices
+if ('ontouchstart' in window) kbdHint.style.display = 'none';
+
+render();
+</script>
+</body>
+</html>
