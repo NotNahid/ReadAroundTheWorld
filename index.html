@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>read around the world</title>
-
-<!-- OG / social meta -->
 <meta property="og:title"        content="read around the world">
 <meta property="og:description"  content="one audiobook from every country — a reading challenge chosen by you.">
 <meta property="og:type"         content="website">
@@ -14,28 +12,23 @@
 <meta name="twitter:description" content="one audiobook from every country — a reading challenge chosen by you.">
 <meta name="description"         content="one audiobook from every country — a reading challenge chosen by you.">
 
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23f5f2ec'/%3E%3Cpath d='M16 8 C16 8 10 7 7 9.5 L7 24 C10 21.5 16 22.5 16 22.5' fill='none' stroke='%23181818' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M16 8 C16 8 22 7 25 9.5 L25 24 C22 21.5 16 22.5 16 22.5' fill='none' stroke='%23181818' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='16' y1='8' x2='16' y2='22.5' stroke='%23181818' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 6 L16 26 M8 8 Q16 11 16 11 Q16 11 24 8 L24 24 Q16 27 16 27 Q16 27 8 24 Z' fill='none' stroke='%23181818' stroke-width='1.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
 
 <script>
   (function() {
-    var canvas = document.createElement('canvas');
-    canvas.width = canvas.height = 1;
-    var ctx = canvas.getContext('2d');
-    ctx.fillText('🇺🇸', -4, 4);
-    var data = ctx.getImageData(0, 0, 1, 1).data;
-    if (data[0] === data[2]) {
+    var c = document.createElement('canvas'); c.width = c.height = 1;
+    var x = c.getContext('2d'); x.fillText('🇺🇸',-4,4);
+    var d = x.getImageData(0,0,1,1).data;
+    if (d[0]===d[2]) {
       var s = document.createElement('script');
       s.src = 'https://cdn.jsdelivr.net/npm/twemoji@latest/dist/twemoji.min.js';
       s.crossOrigin = 'anonymous';
       s.onload = function() {
-        var opts = { folder: 'svg', ext: '.svg', base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/' };
-        twemoji.parse(document.body, opts);
-        new MutationObserver(function(ms) {
-          ms.forEach(function(m) {
-            m.addedNodes.forEach(function(n) { if (n.nodeType===1) twemoji.parse(n, opts); });
-          });
-        }).observe(document.getElementById('list')||document.body, { childList:true, subtree:true });
+        var o = {folder:'svg',ext:'.svg',base:'https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/'};
+        twemoji.parse(document.body, o);
+        new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){if(n.nodeType===1)twemoji.parse(n,o);});});})
+          .observe(document.getElementById('list')||document.body,{childList:true,subtree:true});
       };
       document.head.appendChild(s);
     }
@@ -49,10 +42,9 @@
     --bg:        #f5f2ec;
     --fg:        #181818;
     --sub:       #444;
-    --muted:     #888;
+    --muted:     #999;
     --border:    #d9d4cb;
     --hover:     #edeae3;
-    --input-bg:  #ffffff;
     --done-dot:  #3a8c33;
     --done-link: #2a6626;
 
@@ -81,11 +73,6 @@
     min-height: 100svh;
   }
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(5px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
   .wrap {
     width: min(var(--max-w), 100%);
     margin-inline: auto;
@@ -93,197 +80,140 @@
   }
 
   /* ── HEADER ── */
-  header { margin-bottom: var(--space-m); animation: fadeUp .4s ease both; }
-  header h1 { font-size: var(--step-1); font-weight: 400; font-style: italic; margin-bottom: 5px; line-height: 1.3; }
-  header p  { font-size: var(--step--1); color: var(--sub); line-height: 1.6; }
-  header a  { color: var(--sub); text-decoration: none; border-bottom: 1px solid var(--border); transition: color .15s, border-color .15s; }
-  header a:hover { color: var(--fg); border-color: var(--sub); }
+  header { margin-bottom: var(--space-m); }
+  header h1 { font-size: var(--step-1); font-weight: 400; font-style: italic; margin-bottom: 4px; line-height: 1.3; }
+  header p  { font-size: var(--step--1); color: var(--sub); }
+  header a  { color: var(--sub); text-decoration: none; border-bottom: 1px solid var(--border); }
+  header a:hover { color: var(--fg); }
 
-  /* ── CIRCULAR PROGRESS (fixed bottom-right) ── */
+  /* ── PROGRESS RING (fixed bottom-right) ── */
   .progress-wrap {
     position: fixed;
-    bottom: clamp(16px, 3vw, 28px);
-    right: clamp(16px, 3vw, 28px);
+    bottom: clamp(16px, 3vw, 24px);
+    right: clamp(16px, 3vw, 24px);
     z-index: 100;
-    animation: fadeUp .6s .3s ease both;
   }
-  .progress-ring {
-    position: relative;
-    width: 64px;
-    height: 64px;
-    cursor: default;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,.10));
-  }
-  .progress-ring svg {
-    width: 64px;
-    height: 64px;
-    transform: rotate(-90deg);
-  }
-  .ring-track {
-    fill: none;
-    stroke: var(--border);
-    stroke-width: 3.5;
-  }
-  .ring-fill {
-    fill: none;
-    stroke: var(--done-dot);
-    stroke-width: 3.5;
-    stroke-linecap: round;
-    stroke-dasharray: 163; /* 2π × 26 */
-    stroke-dashoffset: 163;
-    transition: stroke-dashoffset .9s cubic-bezier(.4,0,.2,1);
-  }
-  .ring-bg {
-    fill: var(--bg);
+  .progress-ring { position: relative; width: 52px; height: 52px; }
+  .progress-ring svg { width: 52px; height: 52px; transform: rotate(-90deg); }
+  .ring-bg    { fill: var(--bg); }
+  .ring-track { fill: none; stroke: var(--border); stroke-width: 2; }
+  .ring-fill  {
+    fill: none; stroke: var(--done-dot); stroke-width: 2; stroke-linecap: round;
+    stroke-dasharray: 120; stroke-dashoffset: 120;
+    transition: stroke-dashoffset 1s ease;
   }
   .ring-inner {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    gap: 0;
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
   }
-  .ring-inner .ri-num {
-    font-family: 'EB Garamond', serif;
-    font-size: 15px;
-    font-weight: 500;
-    color: var(--fg);
-    line-height: 1;
-  }
-  .ring-inner .ri-label {
-    font-family: 'EB Garamond', serif;
-    font-size: 9px;
-    font-style: italic;
-    color: var(--muted);
-    line-height: 1.3;
-    margin-top: 1px;
-  }
+  .ri-num   { font-size: 13px; font-weight: 500; line-height: 1; }
+  .ri-label { font-size: 8px; font-style: italic; color: var(--muted); line-height: 1.2; margin-top: 1px; }
 
   /* ── SEARCH ── */
-  .search-wrap { position: relative; margin-bottom: var(--space-xs); animation: fadeUp .4s .1s ease both; }
+  .search-wrap { position: relative; margin-bottom: var(--space-xs); }
   #search {
     display: block; width: 100%;
-    background: var(--input-bg); border: 1.5px solid var(--border); border-radius: 4px; outline: none;
+    background: transparent;
+    border: none; border-bottom: 1px solid var(--border);
+    outline: none;
     font-family: 'EB Garamond', Georgia, serif; font-size: var(--step-0); font-style: italic; color: var(--fg);
-    padding: clamp(8px,1.5vw,11px) clamp(10px,2vw,14px); padding-right: 52px;
-    transition: border-color .15s, box-shadow .15s; -webkit-appearance: none; appearance: none;
+    padding: 7px 48px 7px 0;
+    -webkit-appearance: none; appearance: none;
   }
   #search::placeholder { color: var(--muted); }
-  #search:focus { border-color: var(--fg); box-shadow: 0 0 0 3px rgba(24,24,24,.07); }
+  #search:focus { border-bottom-color: var(--fg); }
   .search-kbd {
-    position: absolute; right: 11px; top: 50%; transform: translateY(-50%);
-    font-family: 'EB Garamond', serif; font-style: italic; font-size: 12px;
-    color: var(--muted); pointer-events: none; transition: opacity .15s;
+    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    font-style: italic; font-size: 11px; color: var(--muted); pointer-events: none;
   }
 
   /* ── CONTROLS ── */
   .controls {
     display: flex; align-items: center; justify-content: space-between;
-    gap: var(--space-s); margin-bottom: var(--space-m);
-    animation: fadeUp .4s .15s ease both; flex-wrap: wrap;
+    gap: var(--space-s); margin-top: var(--space-s); margin-bottom: var(--space-m); flex-wrap: wrap;
   }
   .filter-row { display: flex; gap: clamp(12px, 2.5vw, 22px); }
   .filter-btn {
     background: none; border: none;
     font-family: 'EB Garamond', serif; font-size: var(--step--1); font-style: italic;
-    color: var(--muted); cursor: pointer; padding: 0 0 2px;
-    border-bottom: 1px solid transparent; transition: color .12s, border-color .12s;
-    white-space: nowrap; min-height: 36px; display: flex; align-items: center;
+    color: var(--muted); cursor: pointer; padding: 0 0 1px;
+    border-bottom: 1px solid transparent;
+    white-space: nowrap; min-height: 32px; display: flex; align-items: center;
   }
   .filter-btn:hover { color: var(--sub); }
   .filter-btn.active { color: var(--fg); border-bottom-color: var(--fg); }
-
-
-
-  /* ── REGION HEADING ── */
-  .region-heading {
-    font-size: var(--step--1); font-style: italic; color: var(--muted);
-    letter-spacing: .04em; padding: var(--space-m) 0 var(--space-xs);
-    border-bottom: 1px solid var(--border);
-    display: flex; align-items: baseline; gap: 8px;
-    list-style: none;
-  }
-  .rh-count { font-size: 11px; color: var(--border); }
 
   /* ── LIST ── */
   .country-list { list-style: none; }
   .country-item {
     border-top: 1px solid var(--border);
-    padding: clamp(10px,1.8vw,14px) clamp(8px,1.5vw,12px);
-    display: grid; grid-template-columns: 16px 1fr;
+    padding: clamp(9px,1.6vw,12px) clamp(6px,1.2vw,10px);
+    display: grid; grid-template-columns: 14px 1fr;
     gap: clamp(10px,1.8vw,16px); align-items: start;
-    border-radius: 4px; margin: 0 calc(-1 * clamp(8px,1.5vw,12px));
-    transition: background .12s;
-    -webkit-transform: translateZ(0); transform: translateZ(0);
+    border-radius: 3px;
+    margin: 0 calc(-1 * clamp(6px,1.2vw,10px));
   }
   .country-item:last-child { border-bottom: 1px solid var(--border); }
   .country-item:hover { background: var(--hover); }
 
-  @keyframes flashHighlight {
-    0%   { background: rgba(58,140,51,.15); }
-    100% { background: transparent; }
-  }
-  .country-item.highlight { animation: flashHighlight 1.2s ease both; }
-
   .ci-dot {
-    width: 7px; height: 7px; border-radius: 50%;
-    border: 1.5px solid #bbb;
-    margin-top: calc(var(--step-0) * 0.43); flex-shrink: 0;
-    transition: background .15s, border-color .15s;
+    width: 6px; height: 6px; border-radius: 50%;
+    border: 1.5px solid #ccc;
+    margin-top: calc(var(--step-0) * 0.44); flex-shrink: 0;
   }
   .ci-dot.done { background: var(--done-dot); border-color: var(--done-dot); }
-  .ci-dot.wip  { background: transparent; border-color: #b07d2e; animation: pulse-wip 2s ease-in-out infinite; }
+  .ci-dot.wip  {
+    border-color: #b07d2e;
+    animation: pulse-wip 2s ease-in-out infinite;
+  }
   @keyframes pulse-wip {
-    0%,100% { box-shadow: 0 0 0 2px rgba(176,125,46,.12); }
-    50%      { box-shadow: 0 0 0 4px rgba(176,125,46,.28); }
+    0%,100% { box-shadow: 0 0 0 2px rgba(176,125,46,.1); }
+    50%      { box-shadow: 0 0 0 3px rgba(176,125,46,.22); }
   }
 
   .ci-body { min-width: 0; }
-  .ci-top  { display: flex; align-items: baseline; gap: 7px; flex-wrap: nowrap; }
+  .ci-top  { display: flex; align-items: baseline; gap: 6px; }
   .ci-country {
-    font-size: var(--step-0); color: var(--fg); line-height: 1.5;
+    font-size: var(--step-0); line-height: 1.5;
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .ci-flag { font-size: clamp(12px,1.6vw,15px); flex-shrink: 0; line-height: 1; }
-  .ci-flag img.emoji { height: 1.1em; width: 1.1em; vertical-align: -0.15em; }
+  .ci-flag { font-size: clamp(11px,1.5vw,14px); flex-shrink: 0; line-height: 1; }
+  .ci-flag img.emoji { height: 1em; width: 1em; vertical-align: -0.1em; }
 
   .ci-wip-badge {
-    display: inline-block; font-size: 11px; font-style: normal;
-    font-family: 'EB Garamond', serif; color: #8a5e1a;
-    background: rgba(176,125,46,.1); border: 1px solid rgba(176,125,46,.25);
-    border-radius: 3px; padding: 0px 5px 1px; vertical-align: middle;
-    margin-left: 4px; line-height: 1.6; white-space: nowrap;
+    font-size: 10px; font-style: normal; color: #8a5e1a;
+    border: 1px solid rgba(176,125,46,.3);
+    border-radius: 2px; padding: 0 4px; vertical-align: middle;
+    margin-left: 3px; line-height: 1.6; white-space: nowrap;
   }
-
   .ci-book {
-    margin-top: 2px; font-size: var(--step--1); color: var(--sub);
-    font-style: italic; line-height: 1.55; word-break: break-word; overflow-wrap: break-word;
+    margin-top: 1px; font-size: var(--step--1); color: var(--sub);
+    font-style: italic; line-height: 1.5;
   }
   .ci-book a {
     color: var(--done-link); text-decoration: none; font-style: normal;
-    border-bottom: 1px solid rgba(42,102,38,.25); transition: color .12s, border-color .12s;
-    display: inline-block; padding-bottom: 1px;
+    border-bottom: 1px solid rgba(42,102,38,.2);
   }
-  .ci-book a:hover { color: #1a4a17; border-color: #1a4a17; }
+  .ci-book a:hover { color: #1a4a17; }
 
   /* ── EMPTY ── */
-  #empty { display: none; font-size: var(--step-0); font-style: italic; color: var(--muted); padding: var(--space-m) 0; border-top: 1px solid var(--border); }
+  #empty {
+    display: none; font-style: italic; color: var(--muted);
+    padding: var(--space-m) 0; border-top: 1px solid var(--border);
+  }
 
   /* ── FOOTER ── */
-  footer { margin-top: var(--space-l); font-size: var(--step--1); color: var(--muted); font-style: italic; line-height: 2; }
-  footer a { color: var(--sub); text-decoration: none; border-bottom: 1px solid var(--border); transition: color .12s, border-color .12s; }
-  footer a:hover { color: var(--fg); border-color: var(--sub); }
-  footer .sep { margin-inline: 6px; color: var(--border); }
+  footer { margin-top: var(--space-l); font-size: var(--step--1); color: var(--muted); font-style: italic; }
+  footer a { color: var(--sub); text-decoration: none; border-bottom: 1px solid var(--border); }
+  footer a:hover { color: var(--fg); }
+  footer .sep { margin-inline: 5px; }
 
   @media (hover: none) {
     .country-item:hover  { background: transparent; }
     .country-item:active { background: var(--hover); }
   }
   @media (max-width: 360px) {
-    .controls { flex-direction: column; align-items: flex-start; gap: 6px; }
+    .controls { flex-direction: column; align-items: flex-start; gap: 4px; }
   }
 </style>
 </head>
@@ -299,10 +229,10 @@
 
   <div class="progress-wrap" title="reading progress">
     <div class="progress-ring">
-      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
-        <circle class="ring-bg"    cx="32" cy="32" r="30"/>
-        <circle class="ring-track" cx="32" cy="32" r="26"/>
-        <circle class="ring-fill"  cx="32" cy="32" r="26" id="ringFill"/>
+      <svg viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+        <circle class="ring-bg"    cx="26" cy="26" r="24"/>
+        <circle class="ring-track" cx="26" cy="26" r="19"/>
+        <circle class="ring-fill"  cx="26" cy="26" r="19" id="ringFill"/>
       </svg>
       <div class="ring-inner">
         <span class="ri-num"   id="progCount"></span>
@@ -325,7 +255,6 @@
       <button class="filter-btn" data-filter="wip">reading</button>
       <button class="filter-btn" data-filter="todo">unread</button>
     </div>
-
   </div>
 
   <ul class="country-list" id="list"></ul>
@@ -345,89 +274,59 @@ const books = {
                    playlist: "https://www.youtube.com/playlist?list=PLljZAglIVIZxjT5rkDHwWe6QmqHETirgw" }
 };
 
-// [name, flag, region]
 const countries = [
-  ["Afghanistan","🇦🇫","Asia"],["Albania","🇦🇱","Europe"],["Algeria","🇩🇿","Africa"],
-  ["Andorra","🇦🇩","Europe"],["Angola","🇦🇴","Africa"],
-  ["Antigua and Barbuda","🇦🇬","Americas"],["Argentina","🇦🇷","Americas"],
-  ["Armenia","🇦🇲","Asia"],["Australia","🇦🇺","Oceania"],["Austria","🇦🇹","Europe"],
-  ["Azerbaijan","🇦🇿","Asia"],["Bahamas","🇧🇸","Americas"],["Bahrain","🇧🇭","Asia"],
-  ["Bangladesh","🇧🇩","Asia"],["Barbados","🇧🇧","Americas"],["Belarus","🇧🇾","Europe"],
-  ["Belgium","🇧🇪","Europe"],["Belize","🇧🇿","Americas"],["Benin","🇧🇯","Africa"],
-  ["Bhutan","🇧🇹","Asia"],["Bolivia","🇧🇴","Americas"],["Bosnia and Herzegovina","🇧🇦","Europe"],
-  ["Botswana","🇧🇼","Africa"],["Brazil","🇧🇷","Americas"],["Brunei","🇧🇳","Asia"],
-  ["Bulgaria","🇧🇬","Europe"],["Burkina Faso","🇧🇫","Africa"],["Burundi","🇧🇮","Africa"],
-  ["Cabo Verde","🇨🇻","Africa"],["Cambodia","🇰🇭","Asia"],["Cameroon","🇨🇲","Africa"],
-  ["Canada","🇨🇦","Americas"],["Central African Republic","🇨🇫","Africa"],["Chad","🇹🇩","Africa"],
-  ["Chile","🇨🇱","Americas"],["China","🇨🇳","Asia"],["Colombia","🇨🇴","Americas"],
-  ["Comoros","🇰🇲","Africa"],["Congo (Republic)","🇨🇬","Africa"],["Congo (DR)","🇨🇩","Africa"],
-  ["Costa Rica","🇨🇷","Americas"],["Croatia","🇭🇷","Europe"],["Cuba","🇨🇺","Americas"],
-  ["Cyprus","🇨🇾","Europe"],["Czechia","🇨🇿","Europe"],["Denmark","🇩🇰","Europe"],
-  ["Djibouti","🇩🇯","Africa"],["Dominica","🇩🇲","Americas"],["Dominican Republic","🇩🇴","Americas"],
-  ["Ecuador","🇪🇨","Americas"],["Egypt","🇪🇬","Africa"],["El Salvador","🇸🇻","Americas"],
-  ["Equatorial Guinea","🇬🇶","Africa"],["Eritrea","🇪🇷","Africa"],["Estonia","🇪🇪","Europe"],
-  ["Eswatini","🇸🇿","Africa"],["Ethiopia","🇪🇹","Africa"],["Fiji","🇫🇯","Oceania"],
-  ["Finland","🇫🇮","Europe"],["France","🇫🇷","Europe"],["Gabon","🇬🇦","Africa"],
-  ["Gambia","🇬🇲","Africa"],["Georgia","🇬🇪","Asia"],["Germany","🇩🇪","Europe"],
-  ["Ghana","🇬🇭","Africa"],["Greece","🇬🇷","Europe"],["Grenada","🇬🇩","Americas"],
-  ["Guatemala","🇬🇹","Americas"],["Guinea","🇬🇳","Africa"],["Guinea-Bissau","🇬🇼","Africa"],
-  ["Guyana","🇬🇾","Americas"],["Haiti","🇭🇹","Americas"],["Honduras","🇭🇳","Americas"],
-  ["Hungary","🇭🇺","Europe"],["Iceland","🇮🇸","Europe"],["India","🇮🇳","Asia"],
-  ["Indonesia","🇮🇩","Asia"],["Iran","🇮🇷","Asia"],["Iraq","🇮🇶","Asia"],
-  ["Ireland","🇮🇪","Europe"],["Israel","🇮🇱","Asia"],["Italy","🇮🇹","Europe"],
-  ["Jamaica","🇯🇲","Americas"],["Japan","🇯🇵","Asia"],["Jordan","🇯🇴","Asia"],
-  ["Kazakhstan","🇰🇿","Asia"],["Kenya","🇰🇪","Africa"],["Kiribati","🇰🇮","Oceania"],
-  ["Kuwait","🇰🇼","Asia"],["Kyrgyzstan","🇰🇬","Asia"],["Laos","🇱🇦","Asia"],
-  ["Latvia","🇱🇻","Europe"],["Lebanon","🇱🇧","Asia"],["Lesotho","🇱🇸","Africa"],
-  ["Liberia","🇱🇷","Africa"],["Libya","🇱🇾","Africa"],["Liechtenstein","🇱🇮","Europe"],
-  ["Lithuania","🇱🇹","Europe"],["Luxembourg","🇱🇺","Europe"],["Madagascar","🇲🇬","Africa"],
-  ["Malawi","🇲🇼","Africa"],["Malaysia","🇲🇾","Asia"],["Maldives","🇲🇻","Asia"],
-  ["Mali","🇲🇱","Africa"],["Malta","🇲🇹","Europe"],["Marshall Islands","🇲🇭","Oceania"],
-  ["Mauritania","🇲🇷","Africa"],["Mauritius","🇲🇺","Africa"],["Mexico","🇲🇽","Americas"],
-  ["Micronesia","🇫🇲","Oceania"],["Moldova","🇲🇩","Europe"],["Monaco","🇲🇨","Europe"],
-  ["Mongolia","🇲🇳","Asia"],["Montenegro","🇲🇪","Europe"],["Morocco","🇲🇦","Africa"],
-  ["Mozambique","🇲🇿","Africa"],["Myanmar","🇲🇲","Asia"],["Namibia","🇳🇦","Africa"],
-  ["Nauru","🇳🇷","Oceania"],["Nepal","🇳🇵","Asia"],["Netherlands","🇳🇱","Europe"],
-  ["New Zealand","🇳🇿","Oceania"],["Nicaragua","🇳🇮","Americas"],["Niger","🇳🇪","Africa"],
-  ["Nigeria","🇳🇬","Africa"],["North Korea","🇰🇵","Asia"],["North Macedonia","🇲🇰","Europe"],
-  ["Norway","🇳🇴","Europe"],["Oman","🇴🇲","Asia"],["Pakistan","🇵🇰","Asia"],
-  ["Palau","🇵🇼","Oceania"],["Palestine","🇵🇸","Asia"],["Panama","🇵🇦","Americas"],
-  ["Papua New Guinea","🇵🇬","Oceania"],["Paraguay","🇵🇾","Americas"],["Peru","🇵🇪","Americas"],
-  ["Philippines","🇵🇭","Asia"],["Poland","🇵🇱","Europe"],["Portugal","🇵🇹","Europe"],
-  ["Qatar","🇶🇦","Asia"],["Romania","🇷🇴","Europe"],["Russia","🇷🇺","Europe"],
-  ["Rwanda","🇷🇼","Africa"],["Saint Kitts and Nevis","🇰🇳","Americas"],["Saint Lucia","🇱🇨","Americas"],
-  ["Saint Vincent and the Grenadines","🇻🇨","Americas"],["Samoa","🇼🇸","Oceania"],
-  ["San Marino","🇸🇲","Europe"],["Sao Tome and Principe","🇸🇹","Africa"],
-  ["Saudi Arabia","🇸🇦","Asia"],["Senegal","🇸🇳","Africa"],["Serbia","🇷🇸","Europe"],
-  ["Seychelles","🇸🇨","Africa"],["Sierra Leone","🇸🇱","Africa"],["Singapore","🇸🇬","Asia"],
-  ["Slovakia","🇸🇰","Europe"],["Slovenia","🇸🇮","Europe"],["Solomon Islands","🇸🇧","Oceania"],
-  ["Somalia","🇸🇴","Africa"],["South Africa","🇿🇦","Africa"],["South Korea","🇰🇷","Asia"],
-  ["South Sudan","🇸🇸","Africa"],["Spain","🇪🇸","Europe"],["Sri Lanka","🇱🇰","Asia"],
-  ["Sudan","🇸🇩","Africa"],["Suriname","🇸🇷","Americas"],["Sweden","🇸🇪","Europe"],
-  ["Switzerland","🇨🇭","Europe"],["Syria","🇸🇾","Asia"],["Tajikistan","🇹🇯","Asia"],
-  ["Tanzania","🇹🇿","Africa"],["Thailand","🇹🇭","Asia"],["Timor-Leste","🇹🇱","Asia"],
-  ["Togo","🇹🇬","Africa"],["Tonga","🇹🇴","Oceania"],["Trinidad and Tobago","🇹🇹","Americas"],
-  ["Tunisia","🇹🇳","Africa"],["Turkey","🇹🇷","Asia"],["Turkmenistan","🇹🇲","Asia"],
-  ["Tuvalu","🇹🇻","Oceania"],["Uganda","🇺🇬","Africa"],["Ukraine","🇺🇦","Europe"],
-  ["United Arab Emirates","🇦🇪","Asia"],["United Kingdom","🇬🇧","Europe"],
-  ["United States","🇺🇸","Americas"],["Vanuatu","🇻🇺","Oceania"],["Vatican City","🇻🇦","Europe"],
-  ["Venezuela","🇻🇪","Americas"],["Vietnam","🇻🇳","Asia"],["Yemen","🇾🇪","Asia"],
-  ["Zambia","🇿🇲","Africa"],["Zimbabwe","🇿🇼","Africa"]
+  ["Afghanistan","🇦🇫"],["Albania","🇦🇱"],["Algeria","🇩🇿"],["Andorra","🇦🇩"],["Angola","🇦🇴"],
+  ["Antigua and Barbuda","🇦🇬"],["Argentina","🇦🇷"],["Armenia","🇦🇲"],["Australia","🇦🇺"],["Austria","🇦🇹"],
+  ["Azerbaijan","🇦🇿"],["Bahamas","🇧🇸"],["Bahrain","🇧🇭"],["Bangladesh","🇧🇩"],["Barbados","🇧🇧"],
+  ["Belarus","🇧🇾"],["Belgium","🇧🇪"],["Belize","🇧🇿"],["Benin","🇧🇯"],["Bhutan","🇧🇹"],
+  ["Bolivia","🇧🇴"],["Bosnia and Herzegovina","🇧🇦"],["Botswana","🇧🇼"],["Brazil","🇧🇷"],["Brunei","🇧🇳"],
+  ["Bulgaria","🇧🇬"],["Burkina Faso","🇧🇫"],["Burundi","🇧🇮"],["Cabo Verde","🇨🇻"],["Cambodia","🇰🇭"],
+  ["Cameroon","🇨🇲"],["Canada","🇨🇦"],["Central African Republic","🇨🇫"],["Chad","🇹🇩"],["Chile","🇨🇱"],
+  ["China","🇨🇳"],["Colombia","🇨🇴"],["Comoros","🇰🇲"],["Congo (Republic)","🇨🇬"],["Congo (DR)","🇨🇩"],
+  ["Costa Rica","🇨🇷"],["Croatia","🇭🇷"],["Cuba","🇨🇺"],["Cyprus","🇨🇾"],["Czechia","🇨🇿"],
+  ["Denmark","🇩🇰"],["Djibouti","🇩🇯"],["Dominica","🇩🇲"],["Dominican Republic","🇩🇴"],["Ecuador","🇪🇨"],
+  ["Egypt","🇪🇬"],["El Salvador","🇸🇻"],["Equatorial Guinea","🇬🇶"],["Eritrea","🇪🇷"],["Estonia","🇪🇪"],
+  ["Eswatini","🇸🇿"],["Ethiopia","🇪🇹"],["Fiji","🇫🇯"],["Finland","🇫🇮"],["France","🇫🇷"],
+  ["Gabon","🇬🇦"],["Gambia","🇬🇲"],["Georgia","🇬🇪"],["Germany","🇩🇪"],["Ghana","🇬🇭"],
+  ["Greece","🇬🇷"],["Grenada","🇬🇩"],["Guatemala","🇬🇹"],["Guinea","🇬🇳"],["Guinea-Bissau","🇬🇼"],
+  ["Guyana","🇬🇾"],["Haiti","🇭🇹"],["Honduras","🇭🇳"],["Hungary","🇭🇺"],["Iceland","🇮🇸"],
+  ["India","🇮🇳"],["Indonesia","🇮🇩"],["Iran","🇮🇷"],["Iraq","🇮🇶"],["Ireland","🇮🇪"],
+  ["Israel","🇮🇱"],["Italy","🇮🇹"],["Jamaica","🇯🇲"],["Japan","🇯🇵"],["Jordan","🇯🇴"],
+  ["Kazakhstan","🇰🇿"],["Kenya","🇰🇪"],["Kiribati","🇰🇮"],["Kuwait","🇰🇼"],["Kyrgyzstan","🇰🇬"],
+  ["Laos","🇱🇦"],["Latvia","🇱🇻"],["Lebanon","🇱🇧"],["Lesotho","🇱🇸"],["Liberia","🇱🇷"],
+  ["Libya","🇱🇾"],["Liechtenstein","🇱🇮"],["Lithuania","🇱🇹"],["Luxembourg","🇱🇺"],["Madagascar","🇲🇬"],
+  ["Malawi","🇲🇼"],["Malaysia","🇲🇾"],["Maldives","🇲🇻"],["Mali","🇲🇱"],["Malta","🇲🇹"],
+  ["Marshall Islands","🇲🇭"],["Mauritania","🇲🇷"],["Mauritius","🇲🇺"],["Mexico","🇲🇽"],["Micronesia","🇫🇲"],
+  ["Moldova","🇲🇩"],["Monaco","🇲🇨"],["Mongolia","🇲🇳"],["Montenegro","🇲🇪"],["Morocco","🇲🇦"],
+  ["Mozambique","🇲🇿"],["Myanmar","🇲🇲"],["Namibia","🇳🇦"],["Nauru","🇳🇷"],["Nepal","🇳🇵"],
+  ["Netherlands","🇳🇱"],["New Zealand","🇳🇿"],["Nicaragua","🇳🇮"],["Niger","🇳🇪"],["Nigeria","🇳🇬"],
+  ["North Korea","🇰🇵"],["North Macedonia","🇲🇰"],["Norway","🇳🇴"],["Oman","🇴🇲"],["Pakistan","🇵🇰"],
+  ["Palau","🇵🇼"],["Palestine","🇵🇸"],["Panama","🇵🇦"],["Papua New Guinea","🇵🇬"],["Paraguay","🇵🇾"],
+  ["Peru","🇵🇪"],["Philippines","🇵🇭"],["Poland","🇵🇱"],["Portugal","🇵🇹"],["Qatar","🇶🇦"],
+  ["Romania","🇷🇴"],["Russia","🇷🇺"],["Rwanda","🇷🇼"],["Saint Kitts and Nevis","🇰🇳"],["Saint Lucia","🇱🇨"],
+  ["Saint Vincent and the Grenadines","🇻🇨"],["Samoa","🇼🇸"],["San Marino","🇸🇲"],["Sao Tome and Principe","🇸🇹"],
+  ["Saudi Arabia","🇸🇦"],["Senegal","🇸🇳"],["Serbia","🇷🇸"],["Seychelles","🇸🇨"],["Sierra Leone","🇸🇱"],
+  ["Singapore","🇸🇬"],["Slovakia","🇸🇰"],["Slovenia","🇸🇮"],["Solomon Islands","🇸🇧"],["Somalia","🇸🇴"],
+  ["South Africa","🇿🇦"],["South Korea","🇰🇷"],["South Sudan","🇸🇸"],["Spain","🇪🇸"],["Sri Lanka","🇱🇰"],
+  ["Sudan","🇸🇩"],["Suriname","🇸🇷"],["Sweden","🇸🇪"],["Switzerland","🇨🇭"],["Syria","🇸🇾"],
+  ["Tajikistan","🇹🇯"],["Tanzania","🇹🇿"],["Thailand","🇹🇭"],["Timor-Leste","🇹🇱"],["Togo","🇹🇬"],
+  ["Tonga","🇹🇴"],["Trinidad and Tobago","🇹🇹"],["Tunisia","🇹🇳"],["Turkey","🇹🇷"],["Turkmenistan","🇹🇲"],
+  ["Tuvalu","🇹🇻"],["Uganda","🇺🇬"],["Ukraine","🇺🇦"],["United Arab Emirates","🇦🇪"],["United Kingdom","🇬🇧"],
+  ["United States","🇺🇸"],["Vanuatu","🇻🇺"],["Vatican City","🇻🇦"],["Venezuela","🇻🇪"],["Vietnam","🇻🇳"],
+  ["Yemen","🇾🇪"],["Zambia","🇿🇲"],["Zimbabwe","🇿🇼"]
 ];
 
-const REGION_ORDER = ["Africa","Americas","Asia","Europe","Oceania"];
-
-const listEl       = document.getElementById('list');
-const emptyEl      = document.getElementById('empty');
-const searchEl     = document.getElementById('search');
-const kbdHint      = document.getElementById('kbdHint');
-const progCountEl  = document.getElementById('progCount');
-const ringFillEl   = document.getElementById('ringFill');
+const listEl      = document.getElementById('list');
+const emptyEl     = document.getElementById('empty');
+const searchEl    = document.getElementById('search');
+const kbdHint     = document.getElementById('kbdHint');
+const progCountEl = document.getElementById('progCount');
+const ringFillEl  = document.getElementById('ringFill');
 
 let currentFilter = 'all';
 let currentQuery  = '';
 
-const nodes = countries.map(([name, flag, region]) => {
+const nodes = countries.map(([name, flag]) => {
   const book = books[name];
   const done = !!book && !book.wip;
   const wip  = !!book?.wip;
@@ -451,37 +350,33 @@ const nodes = countries.map(([name, flag, region]) => {
       ${bookHtml}
     </div>`;
 
-  li._name   = name.toLowerCase();
-  li._done   = done;
-  li._wip    = wip;
-  li._region = region;
+  li._name = name.toLowerCase();
+  li._done = done;
+  li._wip  = wip;
   return li;
 });
 
 const doneCount  = nodes.filter(n => n._done).length;
 const totalCount = nodes.length;
 
-// ── PROGRESS RING ──
 function updateProgress() {
-  const circumference = 2 * Math.PI * 26; // 163.36
-  const pct = doneCount / totalCount;
+  const circ = 2 * Math.PI * 19;
   progCountEl.textContent = doneCount;
   requestAnimationFrame(() => {
-    ringFillEl.style.strokeDashoffset = circumference * (1 - pct);
+    ringFillEl.style.strokeDasharray  = circ;
+    ringFillEl.style.strokeDashoffset = circ * (1 - doneCount / totalCount);
   });
 }
 
-// ── RENDER ──
 function render() {
   const q = currentQuery.toLowerCase().trim();
-
   const visible = nodes.filter(li => {
-    const okFilter =
+    const ok =
       currentFilter === 'all' ||
       (currentFilter === 'done' && li._done) ||
       (currentFilter === 'wip'  && li._wip)  ||
       (currentFilter === 'todo' && !li._done && !li._wip);
-    return okFilter && (!q || li._name.includes(q));
+    return ok && (!q || li._name.includes(q));
   });
 
   listEl.innerHTML = '';
@@ -493,7 +388,6 @@ function render() {
   listEl.appendChild(frag);
 }
 
-// ── SEARCH ──
 let timer;
 searchEl.addEventListener('input', () => {
   clearTimeout(timer);
@@ -503,7 +397,6 @@ searchEl.addEventListener('focus',  () => kbdHint.style.opacity = '0');
 searchEl.addEventListener('blur',   () => { if (!searchEl.value) kbdHint.style.opacity = '1'; });
 searchEl.addEventListener('search', () => { currentQuery = ''; render(); });
 
-// ── FILTER BUTTONS ──
 document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
@@ -513,7 +406,6 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
-// ── KEYBOARD ──
 const isDesktop = () => !('ontouchstart' in window);
 document.addEventListener('keydown', e => {
   if (!isDesktop()) return;
